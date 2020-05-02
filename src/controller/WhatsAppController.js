@@ -173,10 +173,31 @@ export default class WhatsAppController {
 
         this.el.btnClosePanelCamera.on('click', e => {
             this.showMessages()
+            this._camera.stop()
+            this.el.btnReshootPanelCamera.click()
         })
 
         this.el.btnTakePicture.on('click', e => {
-            console.log('Take Picture')
+            let dataUrl = this._camera.takePicture()
+
+            this.el.pictureCamera.src = dataUrl
+            this.el.pictureCamera.show()
+            this.el.videoCamera.hide()
+            this.el.btnReshootPanelCamera.show()
+            this.el.containerTakePicture.hide()
+            this.el.containerSendPicture.show()
+        })
+
+        this.el.btnReshootPanelCamera.on('click', e => {
+            this.el.pictureCamera.hide()
+            this.el.videoCamera.show()
+            this.el.btnReshootPanelCamera.hide()
+            this.el.containerTakePicture.show()
+            this.el.containerSendPicture.hide()
+        })
+
+        this.el.containerSendPicture.on('click', e => {
+            console.log(this.el.pictureCamera.src)
         })
 
         this.el.btnSendDocument.on('click', e => {
