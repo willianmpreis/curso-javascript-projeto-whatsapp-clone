@@ -1,4 +1,7 @@
-class WhatsAppController {
+import Format from './../utils/Format'
+import CameraController from './CameraController'
+
+export default class WhatsAppController {
     constructor() {
         console.log("WhatsAppController ok!")
         this.elementsPrototype()
