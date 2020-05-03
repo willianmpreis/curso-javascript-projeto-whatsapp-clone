@@ -164,6 +164,10 @@ export default class WhatsAppController {
         this.el.inputDocument.on('change', e => {
             if(!this.el.inputDocument.files.length) return this
 
+            this.el.panelDocumentPreview.css({
+                'height':'1%'
+            })
+
             let files = this.el.inputDocument.files
             let file = files[0]
 
@@ -175,8 +179,16 @@ export default class WhatsAppController {
                 this.el.infoPanelDocumentPreview.innerHTML = result.info
                 this.el.imagePanelDocumentPreview.show()
                 this.el.filePanelDocumentPreview.hide()
+
+                this.el.panelDocumentPreview.css({
+                    'height':'calc(100% - 120px)'
+                })
             })
             .catch(err => {
+                this.el.panelDocumentPreview.css({
+                    'height':'calc(100% - 120px)'
+                })
+
                 let className = ''
                 switch (file.type) {
                     case 'text/plain':
