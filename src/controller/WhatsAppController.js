@@ -1,5 +1,6 @@
 import Format from './../utils/Format'
 import CameraController from './CameraController'
+import { DocumentPreviewController } from './DocumentPreviewController'
 
 export default class WhatsAppController {
     constructor() {
@@ -156,6 +157,70 @@ export default class WhatsAppController {
             this.closeAllMainPanel()
             this.el.panelDocumentPreview.addClass('open').css({
                 'height':'calc(100% - 120px)'
+            })
+            this.el.inputDocument.click()
+        })
+
+        this.el.inputDocument.on('change', e => {
+            if(!this.el.inputDocument.files.length) return this
+
+            let files = this.el.inputDocument.files
+            let file = files[0]
+
+            this._documentPreviewController = new DocumentPreviewController(file)
+
+            this._documentPreviewController.getPreviewData()
+            .then(result => {
+                this.el.imgPanelDocumentPreview.src = result.src
+                this.el.infoPanelDocumentPreview.innerHTML = result.info
+                this.el.imagePanelDocumentPreview.show()
+                this.el.filePanelDocumentPreview.hide()
+            })
+            .catch(err => {
+                let className = ''
+                switch (file.type) {
+                    case 'text/plain':
+                        className = 'jcxhw icon-doc-txt'
+                        break;
+                    case 'application/wps-office.xls':
+                    case 'application/wps-office.xls':
+                    case 'application/wps-office.xlsx':
+                    case 'application/vnd.oasis.opendocument.spreadsheet':
+                    case 'text/xml':
+                    case 'text/csv':
+                    case 'application/vnd.ms-excel':
+                    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                        className = 'jcxhw icon-doc-xls'
+                        break;
+                    case 'application/vnd.ms-powerpoint':
+                    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                    case 'application/vnd.oasis.opendocument.presentation':
+                        className = 'jcxhw icon-doc-ppt'
+                        break;
+                    case 'application/wps-office.docx':
+                    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                    case 'application/msword':
+                    case 'application/vnd.oasis.opendocument.text':
+                        className = 'jcxhw icon-doc-doc'
+                        break;
+                    case 'application/zip':
+                    case 'application/vnd.rar':
+                    case 'application/x-tar':
+                        //break;
+                    case 'audio/wav':
+                    case 'audio/ogg':
+                    case 'audio/mpeg':
+                        //break;
+                    case 'video/mpeg':
+                    case 'video/ogg':
+                        //break;                
+                    default:
+                        className = 'jcxhw icon-doc-generic'
+                }
+                this.el.iconPanelDocumentPreview.className = className
+                this.el.filenamePanelDocumentPreview.innerHTML = file.name
+                this.el.imagePanelDocumentPreview.hide()
+                this.el.filePanelDocumentPreview.show()
             })
         })
 
