@@ -63,12 +63,25 @@ export default class MicrophoneController extends ClassEvent{
         })
 
         this._mediaRecorder.start()
+        this.startTime()
     }
 
     stopRecord() {
         if (!this.isAvailable) return
 
+        this.stopTime()
         this._mediaRecorder.stop()
         this.stop()
+    }
+
+    startTime(){
+        let start = Date.now()
+        this._recordMicrophoneInterval = setInterval(() => {
+            this.trigger('recordtimer', (Date.now() - start))
+        }, 100)
+    }
+
+    stopTime(){
+        clearInterval(this._recordMicrophoneInterval)
     }
 }
