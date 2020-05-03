@@ -16,7 +16,7 @@ export default class CameraController {
         })
     }
 
-    stop(params) {
+    stop() {
         this._stream.getTracks().forEach(track => {
             track.stop()
         })        
