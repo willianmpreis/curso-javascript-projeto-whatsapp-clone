@@ -10,6 +10,12 @@ export default class User extends Model{
         return User.getReference().doc(email)
     }
 
+    static getContactsRef(id) {
+        return User.getReference()
+            .doc(id)
+            .collection('contacts')
+    }
+
     constructor(id) {
         super()
         if(id) this.getById(id)
@@ -28,13 +34,31 @@ export default class User extends Model{
      * @param {User} contact 
      */
     addContact(contact) {
-        return User.getReference()
-            .doc(this.email)
-            .collection('contacts')
+        return User.getContactsRef(this.email)
             .doc(btoa(contact.email)) //btoa converte para base64
             .set(contact.toJSON())
     }
 
+    getContacts() {
+        return new Promise((success, failure) => {
+
+            User.getContactsRef(this.email).onSnapshot(docs => {
+                let contacts = []
+
+                docs.forEach(doc => {
+                    let data = doc.data()
+                    data.id = doc.id
+
+                    contacts.push(data)
+                })
+
+                this.trigger('contactschange', docs)
+                
+                success(contacts)
+            })
+        })
+    }
+    
     getById(id) {
         return new Promise((success, failure) => {
             User.findByEmail(id).onSnapshot(doc => {
