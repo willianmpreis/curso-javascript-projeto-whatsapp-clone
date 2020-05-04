@@ -118,6 +118,18 @@ export default class WhatsAppController {
                     photo.show()
                 }
 
+                div.on('click', e => {
+                    this.el.activeName.innerHTML = contact.name
+                    this.el.activeStatus.innerHTML = contact.status
+                    if (contact.photo) {
+                        this.el.activePhoto.src = contact.photo
+                        this.el.activePhoto.show()
+                    }
+                    this.el.home.hide()
+                    this.el.main.css({
+                        display: 'flex'
+                    })
+                })
 
                 this.el.contactsMessagesList.appendChild(div)        
             })
