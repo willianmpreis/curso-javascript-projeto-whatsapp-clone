@@ -6,11 +6,25 @@ import { Firebase } from '../db/Firebase'
 
 export default class WhatsAppController {
     constructor() {
+        this._firebase = new Firebase()
+        this.initAuth()
         console.log("WhatsAppController ok!")
         this.elementsPrototype()
         this.loadElements()
         this.initEvents()
-        this._firebase = new Firebase()
+    }
+
+    initAuth() {
+        this._firebase.initAuth()
+        .then(response => {
+            this._user = response.user
+            this.el.appContent.css({
+                display: 'flex'
+            })
+        })
+        .catch(err => {
+            console.log('err', err)
+        })
     }
 
     loadElements() {
