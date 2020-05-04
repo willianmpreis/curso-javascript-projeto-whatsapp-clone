@@ -18,17 +18,32 @@ export default class WhatsAppController {
     initAuth() {
         this._firebase.initAuth()
         .then(response => {            
-            let userReference = User.findByEmail(response.user.email)
+            this._user = new User(response.user.email)
 
-            userReference.set({
-                name: response.user.displayName,
-                email: response.user.email,
-                photo: response.user.photoURL
+            this._user.on('datachange', data => {
+                document.querySelector('title').innerHTML = data.name + ' - Whatsapp Clone'
+
+                this.el.inputNamePanelEditProfile.innerHTML = data.name
+
+                if (!data.photo) return 
+
+                this.el.imgPanelEditProfile.src = data.photo
+                this.el.imgPanelEditProfile.show()
+                this.el.imgDefaultPanelEditProfile.hide()
+
+                let myPhoto = this.el.myPhoto.querySelector('img')
+                myPhoto.src = data.photo
+                myPhoto.show()
             })
-            .then(()=>{
-                this.el.appContent.css({display: 'flex'})                
+
+            this._user.name = response.user.displayName
+            this._user.email = response.user.email
+            this._user.photo = response.user.photoURL
+
+            this._user.save().then(() => {
+                this.el.appContent.css({display: 'flex'})
             })
-            
+
         })
         .catch(err => {
             console.log('err', err)
