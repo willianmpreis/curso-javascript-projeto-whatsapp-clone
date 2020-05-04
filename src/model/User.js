@@ -24,6 +24,17 @@ export default class User extends Model{
     get photo() { return this._data.photo }
     set photo(value) { this._data.photo = value }
 
+    /**
+     * @param {User} contact 
+     */
+    addContact(contact) {
+        return User.getReference()
+            .doc(this.email)
+            .collection('contacts')
+            .doc(btoa(contact.email)) //btoa converte para base64
+            .set(contact.toJSON())
+    }
+
     getById(id) {
         return new Promise((success, failure) => {
             User.findByEmail(id).onSnapshot(doc => {
