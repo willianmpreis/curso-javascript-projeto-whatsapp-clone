@@ -10,12 +10,12 @@ export class Firebase {
     }
 
     init() {
-        if (this._initialized) return
+        if (window._initializedFirebase) return
         // Initialize Firebase
         firebase.initializeApp(this._firebaseConfig);
         firebase.analytics();
         
-        this._initialized = true;
+        window._initializedFirebase = true;
     }
 
     static db() {
